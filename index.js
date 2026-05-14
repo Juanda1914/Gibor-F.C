@@ -5,7 +5,6 @@
 const express = require('express');
 const mysql = require('mysql2/promise');
 const session = require('express-session');
-const MySQLStore = require('express-mysql-session')(session);
 const bcrypt = require('bcrypt');
 const path = require('path');
 const dotenv = require('dotenv');
@@ -23,7 +22,6 @@ const PORT = process.env.PORT || 3000;
 // VARIABLES GLOBALES
 // ========================================
 let db;
-let sessionStore;
 
 // ========================================
 // CONFIGURACIÓN DE EMAIL (Nodemailer)
@@ -56,10 +54,6 @@ async function initializeDatabase() {
         console.log('✅ Conectado a MySQL correctamente');
         connection.release();
         
-        // Crear session store DESPUÉS de conectar a la BD
-        sessionStore = new MySQLStore({}, db);
-        console.log('✅ Session store inicializado');
-        
     } catch (error) {
         console.error('❌ Error conectando a MySQL:', error.message);
         console.log('⚠️ Asegúrate de que MySQL esté corriendo y la base de datos exista');
@@ -79,7 +73,7 @@ const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, uploadDir),
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const userId = req.session?.usuarioId || 'anonimo';
+        const userId = req.session && req.session.usuarioId ? req.session.usuarioId : 'anonimo';
         cb(null, 'usuario-' + userId + '-' + uniqueSuffix + path.extname(file.originalname));
     }
 });
@@ -103,32 +97,25 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Session middleware - CONFIGURACIÓN CRÍTICA PARA COOKIES
-app.use((req, res, next) => {
-    if (sessionStore) {
-        session({
-            key: 'session_gibor_fc',
-            secret: process.env.SESSION_SECRET || 'gibor-fc-secret-key-2026',
-            store: sessionStore,
-            resave: false,
-            saveUninitialized: false,
-            cookie: {
-                secure: false,        // false para HTTP en desarrollo
-                maxAge: 24 * 60 * 60 * 1000, // 24 horas
-                httpOnly: true,       // Proteger contra XSS
-                sameSite: 'lax'       // Permitir cookies en mismo origen
-            }
-        })(req, res, next);
-    } else {
-        next();
+// Session middleware - COMPATIBLE CON VERCEL Y LOCAL
+app.use(session({
+    key: 'session_gibor_fc',
+    secret: process.env.SESSION_SECRET || 'gibor-fc-secret-key-2026',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', // true solo en producción
+        maxAge: 24 * 60 * 60 * 1000, // 24 horas
+        httpOnly: true,
+        sameSite: 'lax'
     }
-});
+}));
 
 // ========================================
 // MIDDLEWARES DE AUTENTICACIÓN
 // ========================================
 function requireAuth(req, res, next) {
-    if (req.session.usuarioId) {
+    if (req.session && req.session.usuarioId) {
         next();
     } else {
         res.status(401).json({ error: 'No autorizado. Debes iniciar sesión.' });
@@ -136,7 +123,7 @@ function requireAuth(req, res, next) {
 }
 
 function requireGuest(req, res, next) {
-    if (!req.session.usuarioId) {
+    if (!req.session || !req.session.usuarioId) {
         next();
     } else {
         res.status(400).json({ error: 'Ya has iniciado sesión' });
@@ -144,7 +131,7 @@ function requireGuest(req, res, next) {
 }
 
 async function requireAdmin(req, res, next) {
-    if (!req.session.usuarioId) {
+    if (!req.session || !req.session.usuarioId) {
         return res.status(401).json({ error: 'No autorizado' });
     }
     try {
@@ -169,7 +156,7 @@ async function requireAdmin(req, res, next) {
 
 // Verificar sesión usuario
 app.get('/api/verificar-sesion', async (req, res) => {
-    if (req.session.usuarioId) {
+    if (req.session && req.session.usuarioId) {
         try {
             const [usuarios] = await db.query(
                 'SELECT id, nombre, email, foto_perfil FROM usuarios WHERE id = ?',
@@ -528,7 +515,7 @@ app.post('/api/admin/logout', (req, res) => {
 
 // Verificar sesión admin
 app.get('/api/admin/verificar', (req, res) => {
-    if (req.session.esAdmin && req.session.usuarioId) {
+    if (req.session && req.session.esAdmin && req.session.usuarioId) {
         res.json({ 
             autenticado: true,
             admin: { id: req.session.usuarioId, email: req.session.usuarioEmail }
@@ -717,6 +704,7 @@ app.get('/api/admin/estadisticas', requireAdmin, async (req, res) => {
         });
     }
 });
+
 // ==========================================
 // ELIMINAR PEDIDOS Y USUARIOS (Rutas DELETE)
 // ==========================================
