@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificar Cuenta - GIBOR F.C</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .verificar-container {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+        
+        .verificar-box {
+            background: #1a1a1a;
+            border: 2px solid #e30613;
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .verificar-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .verificar-header h2 {
+            color: #e30613;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .codigo-input {
+            width: 100%;
+            padding: 15px;
+            background: #0a0a0a;
+            border: 2px solid #333;
+            border-radius: 5px;
+            color: white;
+            font-size: 2rem;
+            text-align: center;
+            letter-spacing: 10px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+        
+        .codigo-input:focus {
+            outline: none;
+            border-color: #e30613;
+        }
+        
+        .btn-verificar {
+            width: 100%;
+            padding: 15px;
+            background: #e30613;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        
+        .btn-reenviar {
+            width: 100%;
+            padding: 12px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        .btn-verificar:hover, .btn-reenviar:hover {
+            opacity: 0.9;
+        }
+        
+        .mensaje {
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+        
+        .mensaje.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+        
+        .mensaje.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid #10b981;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda - GIBOR F.C</title>
+    
+    <link rel="icon" type="image/png" href="images/escudo.png">
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">GIBOR F.C</h1>
+        </div>
+    </header>
+
+    <section class="page-content">
+        <div class="verificar-container">
+            <div class="verificar-box">
+                <div class="verificar-header">
+                    <h2>📧 Verifica tu Cuenta</h2>
+                    <p style="color: #999;">Ingresa el código que enviamos a tu correo</p>
+                </div>
+                
+                <div id="mensaje" class="mensaje"></div>
+                
+                <form id="verificarForm">
+                    <input type="hidden" id="email" value="">
+                    
+                    <input type="text" id="codigo" class="codigo-input" 
+                           placeholder="000000" maxlength="6" required>
+                    
+                    <button type="submit" class="btn-verificar">
+                        ✅ VERIFICAR CUENTA
+                    </button>
+                </form>
+                
+                <button onclick="reenviarCodigo()" class="btn-reenviar">
+                    📩 Reenviar código
+                </button>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="login.html" style="color: #999; text-decoration: none;">
+                        ← Volver al login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Obtener email de la URL o localStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email') || localStorage.getItem('email_verificar');
+        
+        if (email) {
+            document.getElementById('email').value = email;
+        } else {
+            window.location.href = 'registro.html';
+        }
+        
+        document.getElementById('verificarForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const codigo = document.getElementById('codigo').value;
+            const mensajeDiv = document.getElementById('mensaje');
+            
+            try {
+                const response = await fetch('/api/verificar-codigo', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email, codigo: codigo })
+})
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    mensajeDiv.className = 'mensaje success';
+                    mensajeDiv.textContent = data.mensaje;
+                    mensajeDiv.style.display = 'block';
+                    
+                    localStorage.removeItem('email_verificar');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 2000);
+                } else {
+                    mensajeDiv.className = 'mensaje error';
+                    mensajeDiv.textContent = '❌ ' + data.error;
+                    mensajeDiv.style.display = 'block';
+                }
+            } catch (error) {
+                mensajeDiv.className = 'mensaje error';
+                mensajeDiv.textContent = '❌ Error de conexión';
+                mensajeDiv.style.display = 'block';
+            }
+        });
+        
+        async function reenviarCodigo() {
+            const email = document.getElementById('email').value;
+            const mensajeDiv = document.getElementById('mensaje');
+            
+            try {
+                const response = await fetch('/api/reenviar-codigo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    mensajeDiv.className = 'mensaje success';
+                    mensajeDiv.textContent = '✅ ' + data.mensaje;
+                    mensajeDiv.style.display = 'block';
+                } else {
+                    mensajeDiv.className = 'mensaje error';
+                    mensajeDiv.textContent = '❌ ' + data.error;
+                    mensajeDiv.style.display = 'block';
+                }
+            } catch (error) {
+                mensajeDiv.className = 'mensaje error';
+                mensajeDiv.textContent = '❌ Error de conexión';
+                mensajeDiv.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

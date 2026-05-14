@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - Gibor F.C.</title>
+    
+    <!-- FUENTES -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <!-- ICONOS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- ESTILOS DEL ADMIN -->
+    <link rel="stylesheet" href="../css/admin.css">
+    
+    <!-- Verificación de sesión -->
+    <script>
+        if (localStorage.getItem('gibor_admin_logged') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda - GIBOR F.C</title>
+    
+    <!-- ✅ AGREGA ESTO: Favicon con el escudo -->
+    <link rel="icon" type="image/png" href="images/escudo.png">
+    <!-- O si prefieres.ico: <link rel="icon" type="image/x-icon" href="images/escudo.ico"> -->
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- SIDEBAR / BARRA LATERAL -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-shield-alt"></i> GIBOR F.C.</h2>
+            <p>Panel de Administración</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="#dashboard" class="nav-item active" data-section="dashboard">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="#pedidos" class="nav-item" data-section="pedidos">
+                <i class="fas fa-shopping-cart"></i> Pedidos Tienda
+                <span class="badge" id="pedidosBadge" style="display:none;">0</span>
+            </a>
+            <a href="#partidos" class="nav-item" data-section="partidos">
+                <i class="fas fa-futbol"></i> Partidos
+            </a>
+            <a href="#jugadores" class="nav-item" data-section="jugadores">
+                <i class="fas fa-users"></i> Plantel
+            </a>
+            <a href="#productos" class="nav-item" data-section="productos">
+                <i class="fas fa-boxes"></i> Inventario Tienda
+            </a>
+            <a href="#aficionados" class="nav-item" data-section="aficionados">
+                <i class="fas fa-user-friends"></i> Aficionados
+            </a>
+            <a href="#finanzas" class="nav-item" data-section="finanzas">
+                <i class="fas fa-chart-line"></i> Finanzas
+            </a>
+            <a href="#reportes" class="nav-item" data-section="reportes">
+                <i class="fas fa-chart-bar"></i> Reportes
+            </a>
+            <a href="#configuracion" class="nav-item" data-section="configuracion">
+                <i class="fas fa-cog"></i> Configuración
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button onclick="logout()" class="btn-logout">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </button>
+        </div>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        
+        <!-- HEADER SUPERIOR -->
+        <header class="top-header">
+            <button class="btn-menu" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <div class="header-title">
+                <h3>Panel de Control - Gibor F.C.</h3>
+            </div>
+            <div class="header-right">
+                <div class="notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-count" id="notifCount" style="display:none;">0</span>
+                </div>
+                <div class="user-info">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=e30613&color=fff&size=40" alt="Admin">
+                    <span id="adminName">Administrador</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- SECCIÓN 1: DASHBOARD -->
+        <section id="dashboard" class="section active">
+            <div class="section-header">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p>Resumen general - <span id="fechaHoy"></span></p>
+                </div>
+            </div>
+            
+            <!-- Tarjetas de estadísticas -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#e30613,#990000);">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="statPedidosHoy">0</h3>
+                        <p>Pedidos Tienda</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#00C851,#007E33);">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="statVentasHoy">$0</h3>
+                        <p>Ventas Hoy</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#FFD700,#B8860B);">
+                        <i class="fas fa-futbol"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="statPartidosHoy">0</h3>
+                        <p>Partidos Semana</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#2979FF,#1565C0);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="statAficionados">0</h3>
+                        <p>Aficionados</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Grid de actividad -->
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-clock"></i> Últimos Pedidos</h3>
+                    </div>
+                    <div class="card-body" style="max-height:400px; overflow-y:auto;">
+                        <div id="recentOrders">
+                            <p style="text-align:center; color:#888; padding:40px;">Sin actividad</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-calendar-alt"></i> Próximo Partido</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="nextMatch" class="match-card">
+                            <p style="text-align:center; color:#888;">Sin partidos programados</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-tshirt"></i> Productos Destacados</h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="topProducts" class="product-list">
+                            <p style="text-align:center; color:#888;">Sin productos</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-line"></i> Ventas del Mes</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="ventasChart" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: PEDIDOS TIENDA -->
+        <section id="pedidos" class="section">
+            <div class="section-header">
+                <div>
+                    <h1>Gestión de Pedidos</h1>
+                    <p>Administra los pedidos de la tienda oficial</p>
+                </div>
+                <button class="btn-primary" onclick="openModal('pedidoModal')">
+                    <i class="fas fa-plus"></i> Nuevo Pedido
+                </button>
+            </div>
+            
+            <!-- Filtros -->
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filtrarPedidos('todos',this)">Todos</button>
+                <button class="filter-btn" onclick="filtrarPedidos('pendiente',this)">
+                    <span class="badge badge-pendiente">Pendientes</span>
+                </button>
+                <button class="filter-btn" onclick="filtrarPedidos('procesando',this)">
+                    <span class="badge badge-procesando">Procesando</span>
+                </button>
+                <button class="filter-btn" onclick="filtrarPedidos('enviado',this)">
+                    <span class="badge badge-enviado">Enviados</span>
+                </button>
+                <button class="filter-btn" onclick="filtrarPedidos('entregado',this)">
+                    <span class="badge badge-entregado">Entregados</span>
+                </button>
+            </div>
+            
+            <div class="card">
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th># Pedido</th>
+                                <th>Cliente</th>
+                                <th>Productos</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Fecha</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pedidosTable">
+                            <tr><td colspan="7" style="text-align:center; padding:40px; color:#888;">Sin pedidos</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: PARTIDOS -->
+        <section id="partidos" class="section">
+            <div class="section-header">
+                <div>
+                    <h1>Calendario de Partidos</h1>
+                    <p>Gestiona partidos, resultados y estadísticas</p>
+                </div>
+                <button class="btn-primary" onclick="openModal('partidoModal')">
+                    <i class="fas fa-plus"></i> Agregar Partido
+                </button>
+            </div>
+            
+            <!-- Estadísticas de partidos -->
+            <div class="stats-grid" style="margin-bottom:20px;">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#00C851,#007E33);">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="stat-info"><h3 id="statVictorias">0</h3><p>Victorias</p></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#FFD700,#B8860B);">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <div class="stat-info"><h3 id="statEmpates">0</h3><p>Empates</p></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#FF1744,#D50000);">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="stat-info"><h3 id="statDerrotas">0</h3><p>Derrotas</p></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#2979FF,#1565C0);">
+                        <i class="fas fa-futbol"></i>
+                    </div>
+                    <div class="stat-info"><h3 id="statGoles">0</h3><p>Goles a Favor</p></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Rival</th>
+                                <th>Lugar</th>
+                                <th>Torneo</th>
+                                <th>Resultado</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="partidosTable">
+                            <tr><td colspan="8" style="text-align:center; padding:40px; color:#888;">Sin partidos</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: JUGADORES -->
+        <section id="jugadores" class="section">
+            <div class="section-header">
+                <div>
+                    <h1>Plantel de Jugadores</h1>
+                    <p>Gestiona la plantilla del equipo</p>
+                </div>
+                <button class="btn-primary" onclick="openModal('jugadorModal')">
+                    <i class="fas fa-user-plus"></i> Agregar Jugador
+                </button>
+            </div>
+            
+            <div class="card">
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Número</th>
+                                <th>Nombre</th>
+                                <th>Posición</th>
+                                <th>Edad</th>
+                                <th>Partidos</th>
+                                <th>Goles</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="jugadoresTable">
+                            <tr><td colspan="8" style="text-align:center; padding:40px; color:#888;">Sin jugadores</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 5: PRODUCTOS TIENDA -->
+        <section id="productos" class="section">
+            <div class="section-header">
+                <div>
+                    <h1>Inventario Tienda</h1>
+                    <p>Control de productos y stock</p>
+                </div>
+                <button class="btn-primary" onclick="openModal('productoModal')">
+                    <i class="fas fa-plus"></i> Agregar Producto
+                </button>
+            </div>
+            
+            <div class="card">
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Categoría</th>
+                                <th>Stock</th>
+                                <th>Precio</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productosTable">
+                            <tr><td colspan="6" style="text-align:center; padding:40px; color:#888;">Sin productos</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 6: AFICIONADOS -->
+        <section id="aficionados" class="section">
+            <div class="section-header">
+                <div>
+                    <h1>Base de Datos de Aficionados</h1>
+                    <p>Historial y datos de seguidores</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Teléfono</th>
+                                <th>Total Compras</th>
+                                <th>Última Compra</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="aficionadosTable">
+                            <tr><td colspan="6" style="text-align:center; padding:40px; color:#888;">Sin aficionados</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 7: FINANZAS -->
+        <section id="finanzas" class="section">
+            <div class="section-header">
+                <div>
+                    <h1>Control Financiero</h1>
+                    <p>Ingresos, egresos y balances</p>
+                </div>
+            </div>
+            
+            <!-- Resumen financiero -->
+            <div class="stats-grid" style="margin-bottom:20px;">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#00C851,#007E33);">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                    <div class="stat-info"><h3 id="statIngresos">$0</h3><p>Ingresos Mes</p></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#FF1744,#D50000);">
+                        <i class="fas fa-arrow-down"></i>
+                    </div>
+                    <div class="stat-info"><h3 id="statEgresos">$0</h3><p>Egresos Mes</p></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#FFD700,#B8860B);">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div class="stat-info"><h3 id="statBalance">$0</h3><p>Balance</p></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h3><i class="fas fa-chart-pie"></i> Distribución de Ingresos</h3>
+                    <canvas id="finanzasChart" height="150"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 8: REPORTES -->
+        <section id="reportes" class="section">
+            <div class="section-header">
+                <div>
+                    <h1>Reportes y Estadísticas</h1>
+                    <p>Análisis de ventas y rendimiento</p>
+                </div>
+            </div>
+            
+            <div class="reportes-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-trophy"></i> Productos Más Vendidos</h3>
+                    </div>
+                    <div class="card-body" id="productosMasVendidos">
+                        <p style="text-align:center; color:#888; padding:30px;">Sin datos</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-futbol"></i> Goleadores del Equipo</h3>
+                    </div>
+                    <div class="card-body" id="goleadoresTable">
+                        <p style="text-align:center; color:#888; padding:30px;">Sin datos</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 9: CONFIGURACIÓN -->
+        <section id="configuracion" class="section">
+            <div class="section-header">
+                <div>
+                    <h1>Configuración</h1>
+                    <p>Datos del club y parámetros</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <form id="configForm" onsubmit="guardarConfig(event)">
+                        <h3>Datos del Club</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Nombre del Club</label>
+                                <input type="text" value="Gibor F.C." required>
+                            </div>
+                            <div class="form-group">
+                                <label>Año de Fundación</label>
+                                <input type="number" value="2026" min="1900" max="2026">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Email de Contacto</label>
+                                <input type="email" value="contacto@giborfc.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Teléfono</label>
+                                <input type="tel" value="+57 300 123 4567">
+                            </div>
+                        </div>
+                        
+                        <h3 style="margin-top:30px;">Configuración de Tienda</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>IVA (%)</label>
+                                <input type="number" value="19" min="0" max="100">
+                            </div>
+                            <div class="form-group">
+                                <label>Costo de Envío ($)</label>
+                                <input type="number" value="5000" min="0">
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary" style="margin-top:20px;">
+                            <i class="fas fa-save"></i> Guardar Configuración
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODALES -->
+
+    <!-- Modal: Nuevo Pedido -->
+    <div id="pedidoModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2><i class="fas fa-shopping-cart"></i> Nuevo Pedido</h2>
+                <button class="modal-close" onclick="closeModal('pedidoModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="pedidoForm" onsubmit="guardarPedido(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Cliente</label>
+                            <input type="text" id="pedidoCliente" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="pedidoEmail" required>
+                        </div>
+                    </div>
+                    <h3 style="color:var(--color-gold); margin:20px 0 15px;">Productos</h3>
+                    <div id="pedidoItems"></div>
+                    <button type="button" class="btn-secondary" onclick="agregarItemPedido()" style="margin-bottom:15px;">
+                        <i class="fas fa-plus"></i> Agregar Producto
+                    </button>
+                    <div class="pedido-total">
+                        <h3>Total: $<span id="pedidoTotal">0</span></h3>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" onclick="closeModal('pedidoModal')">Cancelar</button>
+                        <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Agregar Partido -->
+    <div id="partidoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-futbol"></i> Agregar Partido</h2>
+                <button class="modal-close" onclick="closeModal('partidoModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="partidoForm" onsubmit="guardarPartido(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Equipo Rival</label>
+                            <input type="text" id="partidoRival" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Torneo</label>
+                            <input type="text" id="partidoTorneo" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Fecha</label>
+                            <input type="date" id="partidoFecha" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Hora</label>
+                            <input type="time" id="partidoHora" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Lugar</label>
+                        <select id="partidoLugar" required>
+                            <option value="local">Local 🏠</option>
+                            <option value="visitante">Visitante ✈️</option>
+                            <option value="neutral">Neutral ⚪</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Goles Gibor F.C.</label>
+                            <input type="number" id="partidoGolesGibor" min="0" value="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Goles Rival</label>
+                            <input type="number" id="partidoGolesRival" min="0" value="0">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" onclick="closeModal('partidoModal')">Cancelar</button>
+                        <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Agregar Jugador -->
+    <div id="jugadorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-plus"></i> Agregar Jugador</h2>
+                <button class="modal-close" onclick="closeModal('jugadorModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="jugadorForm" onsubmit="guardarJugador(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Número de Camiseta</label>
+                            <input type="number" id="jugadorNumero" min="1" max="99" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre Completo</label>
+                            <input type="text" id="jugadorNombre" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Posición</label>
+                            <select id="jugadorPosicion" required>
+                                <option value="portero">Portero</option>
+                                <option value="defensa">Defensa</option>
+                                <option value="mediocampista">Mediocampista</option>
+                                <option value="delantero">Delantero</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Edad</label>
+                            <input type="number" id="jugadorEdad" min="16" max="45">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" onclick="closeModal('jugadorModal')">Cancelar</button>
+                        <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Agregar Producto -->
+    <div id="productoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-box"></i> <span id="productoModalTitle">Agregar Producto</span></h2>
+                <button class="modal-close" onclick="closeModal('productoModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="productoForm" onsubmit="guardarProducto(event)">
+                    <input type="hidden" id="productoIdEdit">
+                    <div class="form-group">
+                        <label>Nombre del Producto</label>
+                        <input type="text" id="productoNombre" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Categoría</label>
+                            <select id="productoCategoria" required>
+                                <option value="camisetas">Camisetas</option>
+                                <option value="balones">Balones</option>
+                                <option value="accesorios">Accesorios</option>
+                                <option value="calzado">Calzado</option>
+                                <option value="entrenamiento">Entrenamiento</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Precio ($)</label>
+                            <input type="number" id="productoPrecio" required min="0">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Stock</label>
+                            <input type="number" id="productoStock" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Estado</label>
+                            <select id="productoEstado">
+                                <option value="disponible">Disponible</option>
+                                <option value="agotado">Agotado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" onclick="closeModal('productoModal')">Cancelar</button>
+                        <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- JAVASCRIPT DEL PANEL ADMIN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+</html>

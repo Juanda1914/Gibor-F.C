@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - GIBOR F.C</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos específicos para perfil */
+        .perfil-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .perfil-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .perfil-header h2 {
+            color: var(--color-rojo);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .foto-perfil-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: var(--color-negro-claro);
+            border-radius: 15px;
+        }
+        .foto-perfil {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--color-rojo);
+            margin-bottom: 20px;
+        }
+        .btn-cambiar-foto {
+            background: var(--color-rojo);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: background 0.3s;
+        }
+        .btn-cambiar-foto:hover {
+            background: var(--color-rojo-oscuro);
+        }
+        #fotoInput {
+            display: none;
+        }
+        .perfil-form {
+            background: var(--color-negro-claro);
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        .perfil-form h3 {
+            color: var(--color-rojo);
+            margin-bottom: 30px;
+            font-size: 1.3rem;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--color-blanco);
+        }
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            background: var(--color-negro);
+            border: 2px solid var(--color-gris);
+            border-radius: 5px;
+            color: var(--color-blanco);
+            font-size: 1rem;
+            font-family: var(--fuente-principal);
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--color-rojo);
+        }
+        .form-group input:disabled {
+            background: #333;
+            color: #999;
+            cursor: not-allowed;
+        }
+        .btn-guardar {
+            width: 100%;
+            padding: 15px;
+            background: var(--color-rojo);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.3s;
+        }
+        .btn-guardar:hover {
+            background: var(--color-rojo-oscuro);
+        }
+        .mensaje {
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 700;
+            display: none;
+        }
+        .mensaje.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            display: block;
+        }
+        .mensaje.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            display: block;
+        }
+        .password-section {
+            background: var(--color-negro-claro);
+            padding: 40px;
+            border-radius: 15px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: var(--color-blanco);
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .back-link:hover {
+            color: var(--color-rojo);
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda - GIBOR F.C</title>
+    
+    <!-- ✅ AGREGA ESTO: Favicon con el escudo -->
+    <link rel="icon" type="image/png" href="images/escudo.png">
+    <!-- O si prefieres.ico: <link rel="icon" type="image/x-icon" href="images/escudo.ico"> -->
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <img src="images/escudo.png" alt="GIBOR FC" class="escudo">
+                <h1 class="logo">GIBOR F.C</h1>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="index.html">INICIO</a></li>
+                    <li><a href="equipos.html">EQUIPOS</a></li>
+                    <li><a href="tienda.html">TIENDA</a></li>
+                    <li><a href="sedes.html">SEDES</a></li>
+                    <li><a href="contacto.html">CONTACTO</a></li>
+                    <li><a href="mis-pedidos.html">MIS PEDIDOS</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <section class="page-content">
+        <div class="container">
+            <div class="perfil-container">
+                <!-- Botón de regreso -->
+                <a href="index.html" class="back-link">← VOLVER AL INICIO</a>
+                
+                <div class="perfil-header">
+                    <h2>👤 MI PERFIL</h2>
+                    <p style="color: #ccc;">Configura tu información personal</p>
+                </div>
+
+                <!-- Foto de Perfil -->
+                <div class="foto-perfil-section">
+                    <img id="fotoPerfil" src="images/perfiles/default.png" alt="Foto" class="foto-perfil">
+                    <br>
+                    <button type="button" class="btn-cambiar-foto" onclick="document.getElementById('fotoInput').click()">
+                        📷 Cambiar Foto
+                    </button>
+                    <input type="file" id="fotoInput" accept="image/*">
+                    <p style="color: #999; font-size: 0.85rem; margin-top: 15px;">
+                        JPG, PNG o GIF. Máximo 5MB
+                    </p>
+                    <div id="fotoMensaje" class="mensaje"></div>
+                </div>
+
+                <!-- Formulario de Datos -->
+                <form id="perfilForm" class="perfil-form">
+                    <h3>✏️ INFORMACIÓN PERSONAL</h3>
+                    
+                    <div class="form-group">
+                        <label for="nombre">Nombre Completo</label>
+                        <input type="text" id="nombre" name="nombre" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Correo Electrónico</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telefono">Teléfono</label>
+                        <input type="tel" id="telefono" name="telefono" placeholder="+57 300 123 4567">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fecha_nacimiento">Fecha de Nacimiento</label>
+                        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fecha de Registro</label>
+                        <input type="text" id="fecha_registro" disabled>
+                    </div>
+
+                    <button type="submit" class="btn-guardar">💾 GUARDAR CAMBIOS</button>
+                    <div id="perfilMensaje" class="mensaje"></div>
+                </form>
+
+                <!-- Cambiar Contraseña -->
+                <form id="passwordForm" class="perfil-form password-section">
+                    <h3>🔐 CAMBIAR CONTRASEÑA</h3>
+                    
+                    <div class="form-group">
+                        <label for="passwordActual">Contraseña Actual</label>
+                        <input type="password" id="passwordActual" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="passwordNuevo">Nueva Contraseña</label>
+                        <input type="password" id="passwordNuevo" required minlength="6">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="passwordConfirmar">Confirmar Nueva Contraseña</label>
+                        <input type="password" id="passwordConfirmar" required minlength="6">
+                    </div>
+
+                    <button type="submit" class="btn-guardar" style="background: #333;">🔑 ACTUALIZAR CONTRASEÑA</button>
+                    <div id="passwordMensaje" class="mensaje"></div>
+                </form>
+            </div>
+        </div>
+    </section>
+    <!-- Cerrar Sesión -->
+<div class="logout-section">
+    <h3>🚪 CERRAR SESIÓN</h3>
+    <p style="color: #999; margin-bottom: 20px;">
+        Al cerrar sesión, deberás iniciar sesión nuevamente para acceder a tu cuenta.
+    </p>
+    <button type="button" id="btnCerrarSesion" class="btn-logout">
+        🚪 Cerrar Sesión
+    </button>
+    <div id="logoutMensaje" class="mensaje"></div>
+</div>
+
+    <footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>GIBOR F.C</h3>
+            <p>Pasión, esfuerzo y gloria desde 2026</p>
+        </div>
+        <div class="footer-section">
+            <h3>Enlaces</h3>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="tienda.html">Tienda</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Síguenos</h3>
+            <div class="social-links">
+                <a href="#">Facebook</a>
+                <a href="#">Instagram</a>
+                <a href="#">Twitter</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 GIBOR F.C - Todos los derechos reservados</p>
+        <a href="admin-login.html" class="admin-access">🔐 Acceso Admin</a>
+    </div>
+</footer>
+
+    <!-- Scripts -->
+    <script>
+        // Verificar sesión al cargar perfil
+async function verificarSesionEnPerfil() {
+    try {
+        const response = await fetch('/api/verificar-sesion');
+        const data = await response.json();
+        
+        if (!data.autenticado) {
+            window.location.href = 'login.html';
+            return false;
+        }
+        return true;
+    } catch (error) {
+        window.location.href = 'login.html';
+        return false;
+    }
+}
+
+// Llamar al inicio
+document.addEventListener('DOMContentLoaded', async () => {
+    const tieneSesion = await verificarSesionEnPerfil();
+    if (tieneSesion) {
+        cargarPerfil();
+    }
+});
+        // ========================================
+        // PERFIL DE USUARIO - GIBOR F.C
+        // ========================================
+        
+        // Cargar datos del perfil
+        async function cargarPerfil() {
+            try {
+                const response = await fetch('/api/perfil');
+                
+                if (response.status === 401) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                const data = await response.json();
+                const usuario = data.usuario;
+                
+                // Llenar campos
+                document.getElementById('nombre').value = usuario.nombre;
+                document.getElementById('email').value = usuario.email;
+                document.getElementById('telefono').value = usuario.telefono || '';
+                document.getElementById('fecha_nacimiento').value = usuario.fecha_nacimiento || '';
+                document.getElementById('fecha_registro').value = new Date(usuario.fecha_registro).toLocaleDateString();
+                
+                // Cargar foto
+                if (usuario.foto_perfil && usuario.foto_perfil !== 'default.png') {
+                    document.getElementById('fotoPerfil').src = `images/perfiles/${usuario.foto_perfil}`;
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarMensaje('perfilMensaje', '❌ Error cargando perfil', 'error');
+            }
+        }
+
+        // Guardar cambios del perfil
+        document.getElementById('perfilForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const datos = {
+                nombre: document.getElementById('nombre').value,
+                email: document.getElementById('email').value,
+                telefono: document.getElementById('telefono').value,
+                fecha_nacimiento: document.getElementById('fecha_nacimiento').value
+            };
+            
+            try {
+                const response = await fetch('/api/perfil', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    mostrarMensaje('perfilMensaje', '✅ ' + data.mensaje, 'success');
+                } else {
+                    mostrarMensaje('perfilMensaje', '❌ ' + data.error, 'error');
+                }
+            } catch (error) {
+                mostrarMensaje('perfilMensaje', '❌ Error de conexión', 'error');
+            }
+        });
+
+        // Cambiar foto de perfil
+        document.getElementById('fotoInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 5 * 1024 * 1024) {
+                mostrarMensaje('fotoMensaje', '❌ La imagen no puede superar 5MB', 'error');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('foto', file);
+            
+            try {
+                const response = await fetch('/api/perfil/foto', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    mostrarMensaje('fotoMensaje', '✅ ' + data.mensaje, 'success');
+                    document.getElementById('fotoPerfil').src = `images/perfiles/${data.foto}?t=${Date.now()}`;
+                } else {
+                    mostrarMensaje('fotoMensaje', '❌ ' + data.error, 'error');
+                }
+            } catch (error) {
+                mostrarMensaje('fotoMensaje', '❌ Error al subir', 'error');
+            }
+        });
+
+        // Cambiar contraseña
+        document.getElementById('passwordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const passwordActual = document.getElementById('passwordActual').value;
+            const passwordNuevo = document.getElementById('passwordNuevo').value;
+            const passwordConfirmar = document.getElementById('passwordConfirmar').value;
+            
+            if (passwordNuevo !== passwordConfirmar) {
+                mostrarMensaje('passwordMensaje', '❌ Las contraseñas no coinciden', 'error');
+                return;
+            }
+            
+            if (passwordNuevo.length < 6) {
+                mostrarMensaje('passwordMensaje', '❌ Mínimo 6 caracteres', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/perfil/password', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ passwordActual, passwordNuevo })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    mostrarMensaje('passwordMensaje', '✅ ' + data.mensaje, 'success');
+                    e.target.reset();
+                } else {
+                    mostrarMensaje('passwordMensaje', '❌ ' + data.error, 'error');
+                }
+            } catch (error) {
+                mostrarMensaje('passwordMensaje', '❌ Error de conexión', 'error');
+            }
+        });
+
+        // Mostrar mensajes
+        function mostrarMensaje(id, texto, tipo) {
+            const div = document.getElementById(id);
+            div.textContent = texto;
+            div.className = `mensaje ${tipo}`;
+            setTimeout(() => {
+                div.className = 'mensaje';
+            }, 5000);
+        }
+
+        // Cargar al iniciar
+        document.addEventListener('DOMContentLoaded', cargarPerfil);
+        // Cerrar sesión
+document.getElementById('btnCerrarSesion').addEventListener('click', async function() {
+    const confirmacion = confirm('¿Estás seguro que deseas cerrar sesión?');
+    
+    if (!confirmacion) return;
+    
+    try {
+        const response = await fetch('/api/logout', {
+            method: 'POST'
+        });
+        
+        if (response.ok) {
+            // Redirigir al inicio
+            window.location.href = 'index.html';
+        } else {
+            mostrarMensaje('logoutMensaje', '❌ Error al cerrar sesión', 'error');
+        }
+    } catch (error) {
+        mostrarMensaje('logoutMensaje', '❌ Error de conexión', 'error');
+    }
+});
+    </script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

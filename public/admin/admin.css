@@ -1,0 +1,304 @@
+:root {
+    --color-red: #e30613;
+    --color-black: #000000;
+    --bg-dark: #1a1a2e;
+    --bg-card: #16213e;
+    --text-white: #ffffff;
+    --text-gray: rgba(255, 255, 255, 0.7);
+    --border-color: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-white);
+    width: 100vw;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* HEADER SUPERIOR */
+.top-bar {
+    background: linear-gradient(90deg, #000000 0%, #1a1a2e 100%);
+    padding: 20px 40px;
+    border-bottom: 3px solid var(--color-red);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(227, 6, 19, 0.3);
+}
+
+.top-bar-left {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.brand-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-white);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.brand-title i {
+    color: var(--color-red);
+    font-size: 2rem;
+}
+
+.nav-links {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.btn-link {
+    color: var(--text-gray);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.btn-link:hover {
+    color: var(--color-red);
+}
+
+.btn-logout {
+    background: var(--color-red);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-logout:hover {
+    background: #ff1a28;
+    transform: translateY(-2px);
+}
+
+/* CONTENIDO PRINCIPAL - FULL WIDTH */
+.main-container {
+    max-width: 100%;
+    margin: 0;
+    padding: 30px 40px;
+    width: 100%;
+}
+
+/* GRID DE ESTADÍSTICAS - 4 COLUMNAS */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border-radius: 12px;
+    padding: 30px;
+    border-left: 5px solid var(--color-red);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    transition: transform 0.3s ease;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(227, 6, 19, 0.3);
+}
+
+.stat-label {
+    color: var(--text-gray);
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-value {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--text-white);
+}
+
+/* SECCIÓN DE PEDIDOS - FULL WIDTH */
+.orders-section {
+    width: 100%;
+    background: var(--bg-card);
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.section-title {
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    color: var(--text-white);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+/* TARJETAS DE PEDIDOS */
+.order-card {
+    background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+    transition: 0.3s;
+}
+
+.order-card:hover {
+    border-color: var(--color-red);
+    box-shadow: 0 5px 20px rgba(227, 6, 19, 0.2);
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.order-id {
+    color: var(--color-red);
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.order-date {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+
+.badge {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+}
+
+.badge-enviado { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.badge-pendiente { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+.badge-procesando { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.badge-entregado { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+
+.order-body p {
+    margin: 8px 0;
+    font-size: 0.95rem;
+    color: var(--text-gray);
+}
+
+.order-body strong {
+    color: var(--text-white);
+    margin-right: 5px;
+}
+
+.order-footer {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn-action {
+    background: #2c2c2c;
+    color: white;
+    border: 1px solid var(--border-color);
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.btn-action:hover {
+    background: var(--color-red);
+    border-color: var(--color-red);
+    transform: translateY(-2px);
+}
+
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .top-bar {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .main-container {
+        padding: 20px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-card {
+        min-height: 120px;
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+    }
+    
+    .order-header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+}
+
+/* SCROLLBAR PERSONALIZADO */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-red);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #ff1a28;
+}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios - Admin GIBOR F.C</title>
+    <link rel="stylesheet" href="admin.css?v=123">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="admin-header">
+        <div class="admin-header-logo">
+            <img src="../images/escudo.png" alt="GIBOR F.C">
+            <h1>Admin <span>GIBOR F.C</span></h1>
+        </div>
+        <button class="btn-logout-header" onclick="cerrarSesion()">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </button>
+        <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda - GIBOR F.C</title>
+    
+    <!-- ✅ AGREGA ESTO: Favicon con el escudo -->
+    <link rel="icon" type="image/png" href="images/escudo.png">
+    <!-- O si prefieres.ico: <link rel="icon" type="image/x-icon" href="images/escudo.ico"> -->
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    </header>
+
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>ADMIN PANEL</h2>
+                <p>Panel de Administración</p>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li><a href="index.html"><i class="fas fa-home"></i> Inicio</a></li>
+                <li><a href="pedidos.html"><i class="fas fa-shopping-cart"></i> Órdenes</a></li>
+                <li><a href="usuarios.html" class="active"><i class="fas fa-users"></i> Usuarios</a></li>
+                <li><a href="productos.html"><i class="fas fa-box"></i> Productos</a></li>
+                <li><a href="estadisticas.html"><i class="fas fa-chart-bar"></i> Estadísticas</a></li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <a href="../index.html"><i class="fas fa-arrow-left"></i> Volver Al Sitio</a>
+                <a href="#" onclick="cerrarSesion()"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1>👥 Gestión de Usuarios</h1>
+                <p>Administra los usuarios registrados</p>
+            </div>
+
+            <div class="content-box">
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Correo</th>
+                                <th>Teléfono</th>
+                                <th>Verificado</th>
+                                <th>Fecha Registro</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="listaUsuarios">
+                            <tr>
+                                <td colspan="7" style="text-align: center; color: rgba(255,255,255,0.5);">Cargando...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>

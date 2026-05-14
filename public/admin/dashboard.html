@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - Gibor F.C.</title>
+    
+    <!-- FUENTES -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <!-- ICONOS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- PDF LIBRARY -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <style>
+        :root {
+            --color-red: #e30613;
+            --color-black: #000000;
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-tertiary: #0f3460;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); display: flex; min-height: 100vh; }
+
+        /* SIDEBAR */
+        .sidebar { width: 260px; background: var(--bg-secondary); border-right: 1px solid var(--border-color); position: fixed; left: 0; top: 0; height: 100vh; display: flex; flex-direction: column; z-index: 100; }
+        .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border-color); text-align: center; }
+        .sidebar-header h2 { color: var(--color-red); font-size: 1.3rem; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .sidebar-header p { font-size: 0.8rem; color: var(--text-secondary); margin-top: 5px; }
+        .sidebar-nav { flex: 1; padding: 20px 10px; overflow-y: auto; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 14px 20px; margin: 4px 0; border-radius: 10px; color: var(--text-secondary); font-weight: 500; cursor: pointer; text-decoration: none; transition: 0.3s; }
+        .nav-item:hover, .nav-item.active { background: var(--color-red); color: white; }
+        .nav-item i { width: 20px; text-align: center; }
+        .sidebar-footer { padding: 15px 20px; border-top: 1px solid var(--border-color); }
+        .btn-logout { width: 100%; padding: 12px; background: transparent; border: 1px solid var(--color-red); color: var(--color-red); border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; }
+        .btn-logout:hover { background: var(--color-red); color: white; }
+
+        /* MAIN CONTENT */
+        .main-content { flex: 1; margin-left: 260px; display: flex; flex-direction: column; }
+        .top-header { background: var(--color-black); padding: 15px 30px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--color-red); position: sticky; top: 0; z-index: 90; }
+        .btn-menu { display: none; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
+        .header-title h3 { font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .user-info img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--color-red); }
+
+        /* SECTIONS */
+        .section { display: none; padding: 30px; animation: fadeIn 0.3s; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        .section-header h1 { font-size: 1.6rem; }
+
+        /* STATS GRID */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: var(--bg-secondary); border-radius: 15px; padding: 20px; display: flex; align-items: center; gap: 15px; border: 1px solid var(--border-color); }
+        .stat-icon { width: 60px; height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white; }
+        .stat-info h3 { font-size: 1.5rem; margin-bottom: 5px; }
+        .stat-info p { font-size: 0.9rem; color: var(--text-secondary); }
+
+        /* DASHBOARD GRID */
+        .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        .card { background: var(--bg-secondary); border-radius: 15px; border: 1px solid var(--border-color); overflow: hidden; }
+        .card-header { padding: 20px; border-bottom: 1px solid var(--border-color); }
+        .card-header h3 { font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .card-body { padding: 20px; }
+
+        /* TABLES */
+        .table-container { overflow-x: auto; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th, .data-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        .data-table th { background: var(--bg-tertiary); font-size: 0.85rem; text-transform: uppercase; }
+        .data-table tbody tr:hover { background: rgba(227, 6, 19, 0.05); }
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .badge-pendiente { background: rgba(255, 179, 0, 0.2); color: #FFB300; }
+        .badge-entregado { background: rgba(0, 200, 81, 0.2); color: #00C851; }
+        .badge-procesando { background: rgba(41, 121, 255, 0.2); color: #2979FF; }
+        .badge-enviado { background: rgba(139, 92, 246, 0.2); color: #8B5CF6; }
+        .badge-cancelado { background: rgba(239, 68, 68, 0.2); color: #EF4444; }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .btn-menu { display: block; }
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-shield-alt"></i> GIBOR F.C.</h2>
+            <p>Panel de Administración</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="#dashboard" class="nav-item active" onclick="showSection('dashboard')">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="#estadisticas" class="nav-item" onclick="showSection('estadisticas')">
+                <i class="fas fa-chart-line"></i> Estadísticas
+            </a>
+            <a href="#pedidos" class="nav-item" onclick="showSection('pedidos')">
+                <i class="fas fa-shopping-cart"></i> Pedidos
+            </a>
+            <a href="#usuarios" class="nav-item" onclick="showSection('usuarios')">
+                <i class="fas fa-users"></i> Usuarios
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <button onclick="logout()" class="btn-logout">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </button>
+        </div>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        
+        <!-- HEADER SUPERIOR -->
+        <header class="top-header">
+            <button class="btn-menu" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <div class="header-title">
+                <h3>Panel de Control</h3>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <img src="https://ui-avatars.com/api/?name=Admin&background=e30613&color=fff&size=40" alt="Admin">
+                    <span id="adminEmail">Cargando...</span>
+                </div>
+                <a href="../index.html" class="btn-primary" style="text-decoration:none;"><i class="fas fa-arrow-left"></i> Volver al Sitio</a>
+            </div>
+        </header>
+
+        <!-- SECCIÓN 1: DASHBOARD -->
+        <section id="dashboard" class="section active">
+            <div class="section-header">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p>Resumen general</p>
+                </div>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#e30613,#990000);">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="statPedidos">0</h3>
+                        <p>Total Pedidos</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#00C851,#007E33);">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="statVentas">$0</h3>
+                        <p>Ventas Totales</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#2979FF,#1565C0);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="statUsuarios">0</h3>
+                        <p>Aficionados</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-clock"></i> Últimos Pedidos</h3>
+                    </div>
+                    <div class="card-body" id="listaPedidosDashboard">
+                        <!-- Se llena con JS -->
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-calendar-alt"></i> Actividad Reciente</h3>
+                    </div>
+                    <div class="card-body text-center">
+                        <p style="color:var(--text-secondary);">Sin actividad reciente</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: ESTADÍSTICAS -->
+        <section id="estadisticas" class="section">
+            <div class="section-header">
+                <div>
+                    <h1>Estadísticas</h1>
+                    <p>Análisis detallado de ventas y actividad</p>
+                </div>
+            </div>
+            
+            <!-- Tarjetas de Estadísticas Rápidas -->
+            <div class="stats-grid" style="margin-bottom: 40px;">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#e30613,#990000);">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="statVentasHoy">$0</h3>
+                        <p>Ventas Hoy</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#00C851,#007E33);">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="statPedidosHoy">0</h3>
+                        <p>Pedidos Hoy</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#FFD700,#B8860B);">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="statPendientes">0</h3>
+                        <p>Pendientes</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background:linear-gradient(135deg,#2979FF,#1565C0);">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="statEntregados">0</h3>
+                        <p>Entregados</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico 1: Ventas Mensuales -->
+            <div class="card" style="margin-bottom: 30px;">
+                <div class="card-header">
+                    <h3><i class="fas fa-chart-line"></i> Ventas Mensuales</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartVentasMensuales" height="80"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráficos 2 y 3: Pedidos por Estado y Productos -->
+            <div class="dashboard-grid" style="margin-bottom: 30px;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-pie"></i> Pedidos por Estado</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chartPedidosEstado"></canvas>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-bar"></i> Productos Más Vendidos</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chartProductosTop"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico 4: Usuarios Registrados -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-users"></i> Usuarios Registrados (Últimos 6 meses)</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartUsuarios" height="80"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: PEDIDOS (AGREGADA) -->
+        <section id="pedidos" class="section">
+            <div class="section-header">
+                <h1>Gestión de Pedidos</h1>
+                <button onclick="exportarPedidosPDF()" class="btn-primary">
+                    <i class="fas fa-file-pdf"></i> Exportar PDF
+                </button>
+            </div>
+            <div class="card">
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th># Pedido</th>
+                                <th>Cliente</th>
+                                <th>Email</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Fecha</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaPedidosBody">
+                            <tr><td colspan="7" style="text-align:center; padding:40px; color:var(--text-secondary);">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 4: USUARIOS -->
+        <section id="usuarios" class="section">
+            <div class="section-header">
+                <h1>Aficionados Registrados</h1>
+            </div>
+            <div class="card">
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Teléfono</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaUsuariosBody">
+                            <tr><td colspan="4" style="text-align:center; padding:40px; color:var(--text-secondary);">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ==========================================
+        // FUNCIONES GLOBALES
+        // ==========================================
+        
+        window.showSection = function(sectionId) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            const target = document.getElementById(sectionId);
+            if (target) {
+                target.classList.add('active');
+                
+                // ✅ Cargar estadísticas solo cuando se muestra esa sección
+                if (sectionId === 'estadisticas') {
+                    cargarEstadisticas();
+                }
+            }
+            
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            if (event && event.currentTarget) event.currentTarget.classList.add('active');
+            
+            if(window.innerWidth <= 1024) {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar) sidebar.classList.remove('active');
+            }
+        };
+
+        window.toggleSidebar = function() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) sidebar.classList.toggle('active');
+        };
+
+        window.logout = async function() {
+            if (!confirm('¿Cerrar sesión?')) return;
+            try { await fetch('/api/admin/logout', { method: 'POST', credentials: 'include' }); } catch (e) {}
+            localStorage.removeItem('gibor_admin_logged');
+            window.location.href = '../admin-login.html';
+        };
+
+        // ==========================================
+        // INICIALIZACIÓN
+        // ==========================================
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('✅ Dashboard cargado - Conectando a BD...');
+            await verificarSesion();
+            await cargarDatosReales();
+        });
+
+        async function verificarSesion() {
+            try {
+                const res = await fetch('/api/admin/verificar', { credentials: 'include' });
+                const data = await res.json();
+                if (data.autenticado) {
+                    const adminEmail = document.getElementById('adminEmail');
+                    if (adminEmail) adminEmail.textContent = data.admin.email;
+                } else {
+                    window.location.href = '../admin-login.html';
+                }
+            } catch (error) {
+                console.error('Error verificación:', error);
+                window.location.href = '../admin-login.html';
+            }
+        }
+
+        // ==========================================
+        // CARGAR DATOS REALES DESDE MYSQL
+        // ==========================================
+        
+        async function cargarDatosReales() {
+            try {
+                console.log('🔄 Cargando datos...');
+                
+                // 1. Cargar Estadísticas básicas
+                const resStats = await fetch('/api/admin/stats', { credentials: 'include' });
+                const stats = await resStats.json();
+                console.log('📊 Stats:', stats);
+                
+                const el = (id) => document.getElementById(id);
+                if(el('statPedidos')) el('statPedidos').innerText = stats.totalPedidos || 0;
+                
+                if(el('statVentas')) {
+                    const ventas = parseFloat(stats.ventasTotales) || 0;
+                    el('statVentas').innerText = '$' + ventas.toLocaleString('en-US');
+                }
+                
+                if(el('statUsuarios')) el('statUsuarios').innerText = stats.totalUsuarios || 0;
+                
+                // 2. Cargar Pedidos
+                console.log('📦 Cargando pedidos...');
+                const resPedidos = await fetch('/api/admin/pedidos', { credentials: 'include' });
+                const pedidos = await resPedidos.json();
+                console.log('✅ Pedidos recibidos:', pedidos);
+                console.log('📋 Cantidad:', pedidos.length);
+                
+                if (pedidos.length === 0) {
+                    console.warn('⚠️ No hay pedidos en la base de datos');
+                }
+                
+                renderizarPedidosDashboard(pedidos.slice(0, 5));
+                renderizarPedidosTabla(pedidos);
+                
+                // 3. Cargar Usuarios
+                const resUsuarios = await fetch('/api/admin/usuarios', { credentials: 'include' });
+                const usuarios = await resUsuarios.json();
+                console.log('👥 Usuarios:', usuarios);
+                renderizarUsuarios(usuarios);
+                
+                console.log('✅ Datos cargados correctamente');
+                
+            } catch (error) {
+                console.error('❌ Error cargando datos:', error);
+                alert('Error conectando con la base de datos. Revisa la consola.');
+            }
+        }
+
+        // ==========================================
+        // CARGAR ESTADÍSTICAS CON GRÁFICOS
+        // ==========================================
+
+        async function cargarEstadisticas() {
+            try {
+                console.log('📊 Cargando estadísticas avanzadas...');
+                
+                // Obtener datos del backend
+                const res = await fetch('/api/admin/estadisticas', { credentials: 'include' });
+                
+                // Si la ruta no existe aún, usar datos de ejemplo
+                if (!res.ok) {
+                    console.log('⚠️ Ruta /api/admin/estadisticas no disponible, usando datos de ejemplo');
+                    renderizarGraficosEjemplo();
+                    return;
+                }
+                
+                const data = await res.json();
+                
+                // Actualizar tarjetas rápidas
+                document.getElementById('statVentasHoy').innerText = '$' + (data.ventasHoy || 0).toLocaleString('en-US');
+                document.getElementById('statPedidosHoy').innerText = data.pedidosHoy || 0;
+                document.getElementById('statPendientes').innerText = data.pedidosPendientes || 0;
+                document.getElementById('statEntregados').innerText = data.pedidosEntregados || 0;
+                
+                // Renderizar gráficos
+                renderizarGraficoVentasMensuales(data.ventasMensuales);
+                renderizarGraficoPedidosEstado(data.pedidosPorEstado);
+                renderizarGraficoProductosTop(data.productosTop);
+                renderizarGraficoUsuarios(data.usuariosPorMes);
+                
+                console.log('✅ Estadísticas cargadas correctamente');
+                
+            } catch (error) {
+                console.error('❌ Error cargando estadísticas:', error);
+                // Fallback a datos de ejemplo
+                renderizarGraficosEjemplo();
+            }
+        }
+
+        // Datos de ejemplo (fallback si no hay backend)
+        function renderizarGraficosEjemplo() {
+            renderizarGraficoVentasMensuales([
+                {mes: 'Ene', total: 150000}, {mes: 'Feb', total: 230000},
+                {mes: 'Mar', total: 180000}, {mes: 'Abr', total: 340000},
+                {mes: 'May', total: 290000}, {mes: 'Jun', total: 410000}
+            ]);
+            renderizarGraficoPedidosEstado([
+                {estado: 'pendiente', cantidad: 5}, {estado: 'procesando', cantidad: 3},
+                {estado: 'enviado', cantidad: 2}, {estado: 'entregado', cantidad: 12}
+            ]);
+            renderizarGraficoProductosTop([
+                {producto: 'Camiseta', cantidad: 15}, {producto: 'Balón', cantidad: 8},
+                {producto: 'Gorra', cantidad: 5}
+            ]);
+            renderizarGraficoUsuarios([
+                {mes: 'Ene', cantidad: 10}, {mes: 'Feb', cantidad: 15},
+                {mes: 'Mar', cantidad: 12}, {mes: 'Abr', cantidad: 20},
+                {mes: 'May', cantidad: 18}, {mes: 'Jun', cantidad: 25}
+            ]);
+        }
+
+        // Gráfico 1: Ventas Mensuales (Líneas)
+        function renderizarGraficoVentasMensuales(ventasData) {
+            const existing = Chart.getChart('chartVentasMensuales');
+            if (existing) existing.destroy();
+            
+            const ctx = document.getElementById('chartVentasMensuales').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ventasData.map(m => m.mes) || ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Ventas ($)',
+                        data: ventasData.map(v => v.total) || [0, 0, 0, 0, 0, 0],
+                        borderColor: '#e30613',
+                        backgroundColor: 'rgba(227, 6, 19, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString('en-US');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico 2: Pedidos por Estado (Doughnut)
+        function renderizarGraficoPedidosEstado(pedidosData) {
+            const existing = Chart.getChart('chartPedidosEstado');
+            if (existing) existing.destroy();
+            
+            const ctx = document.getElementById('chartPedidosEstado').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: pedidosData.map(p => p.estado) || ['Pendiente', 'Procesando', 'Enviado', 'Entregado'],
+                    datasets: [{
+                        data: pedidosData.map(p => p.cantidad) || [0, 0, 0, 0],
+                        backgroundColor: ['#FFB300', '#2979FF', '#8B5CF6', '#00C851']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        }
+
+        // Gráfico 3: Productos Top (Barras Horizontales)
+        function renderizarGraficoProductosTop(productosData) {
+            const existing = Chart.getChart('chartProductosTop');
+            if (existing) existing.destroy();
+            
+            const ctx = document.getElementById('chartProductosTop').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: productosData.map(p => p.producto) || ['Camiseta', 'Pantaloneta', 'Balón'],
+                    datasets: [{
+                        label: 'Ventas',
+                        data: productosData.map(p => p.cantidad) || [0, 0, 0],
+                        backgroundColor: '#e30613'
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { beginAtZero: true } }
+                }
+            });
+        }
+
+        // Gráfico 4: Usuarios por Mes (Barras)
+        function renderizarGraficoUsuarios(usuariosData) {
+            const existing = Chart.getChart('chartUsuarios');
+            if (existing) existing.destroy();
+            
+            const ctx = document.getElementById('chartUsuarios').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: usuariosData.map(u => u.mes) || ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Nuevos Usuarios',
+                        data: usuariosData.map(u => u.cantidad) || [0, 0, 0, 0, 0, 0],
+                        backgroundColor: '#2979FF'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+
+        // ==========================================
+        // RENDERIZADO
+        // ==========================================
+
+        function renderizarPedidosDashboard(pedidos) {
+            const container = document.getElementById('listaPedidosDashboard');
+            if (!container) return;
+            
+            if (!pedidos || pedidos.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:var(--text-secondary); padding:20px;">Sin pedidos recientes</p>';
+                return;
+            }
+
+            let html = '';
+            pedidos.forEach(p => {
+                let badgeClass = 'badge-pendiente';
+                if(p.estado === 'entregado') badgeClass = 'badge-entregado';
+                if(p.estado === 'procesando') badgeClass = 'badge-procesando';
+                if(p.estado === 'enviado') badgeClass = 'badge-enviado';
+                if(p.estado === 'cancelado') badgeClass = 'badge-cancelado';
+                
+                const fecha = new Date(p.fecha_pedido).toLocaleDateString('es-CO');
+
+                html += `
+                    <div style="padding:12px 0;border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;">
+                        <div>
+                            <strong>Pedido #${p.id}</strong>
+                            <div style="font-size:0.85rem;color:var(--text-secondary);margin-top:4px;">${p.nombre_cliente} - ${fecha}</div>
+                        </div>
+                        <span class="badge ${badgeClass}">${p.estado.toUpperCase()}</span>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function renderizarPedidosTabla(pedidos) {
+            const tbody = document.getElementById('tablaPedidosBody');
+            if (!tbody) return;
+
+            if (!pedidos || pedidos.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:40px; color:var(--text-secondary);">Sin pedidos registrados</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = '';
+            pedidos.forEach((p, index) => {
+                const pedidoId = parseInt(p.id);
+                if (isNaN(pedidoId)) return;
+                
+                const fecha = new Date(p.fecha_pedido).toLocaleDateString('es-CO');
+                
+                const estados = ['pendiente', 'procesando', 'enviado', 'entregado', 'cancelado'];
+                let options = '';
+                estados.forEach(estado => {
+                    const selected = p.estado === estado ? 'selected' : '';
+                    options += `<option value="${estado}" ${selected}>${estado}</option>`;
+                });
+
+                let badgeClass = 'badge-pendiente';
+                if(p.estado === 'entregado') badgeClass = 'badge-entregado';
+                if(p.estado === 'procesando') badgeClass = 'badge-procesando';
+                if(p.estado === 'enviado') badgeClass = 'badge-enviado';
+                if(p.estado === 'cancelado') badgeClass = 'badge-cancelado';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>#${pedidoId}</td>
+                        <td>${p.nombre_cliente || 'N/A'}</td>
+                        <td>${p.email || 'N/A'}</td>
+                        <td>$${parseFloat(p.total || 0).toLocaleString('en-US')}</td>
+                        <td>
+                            <select onchange="cambiarEstadoPedido(${pedidoId}, this.value)" 
+                                    class="status-select"
+                                    style="padding:5px 10px; border-radius:5px; border:1px solid var(--border-color); background:var(--bg-primary); color:white; cursor:pointer;">
+                                ${options}
+                            </select>
+                        </td>
+                        <td>${fecha}</td>
+                        <td>
+                            <button onclick="eliminarPedido(${pedidoId})" 
+                                    style="background:#dc3545; color:white; border:none; padding:6px 12px; border-radius:5px; cursor:pointer; font-size:0.85rem;"
+                                    title="Eliminar pedido">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderizarUsuarios(usuarios) {
+            const tbody = document.getElementById('tablaUsuariosBody');
+            if (!tbody) return;
+
+            if (!usuarios || usuarios.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:40px; color:var(--text-secondary);">Sin usuarios registrados</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = '';
+            usuarios.forEach(u => {
+                const userId = parseInt(u.id);
+                if (isNaN(userId)) return;
+                
+                const nombreSanitized = (u.nombre || '').replace(/'/g, "\\'");
+                const fecha = new Date(u.fecha_registro).toLocaleDateString('es-CO');
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${u.nombre}</td>
+                        <td>${u.email}</td>
+                        <td>${u.telefono || '-'} <small style="color:var(--text-secondary); display:block; font-size:0.75rem;">${fecha}</small></td>
+                        <td>
+                            <button onclick="eliminarUsuario(${userId}, '${nombreSanitized}')" 
+                                    style="background:#dc3545; color:white; border:none; padding:6px 12px; border-radius:5px; cursor:pointer; font-size:0.85rem;"
+                                    title="Eliminar usuario">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // ==========================================
+        // FUNCIONES DE ACCIÓN
+        // ==========================================
+
+        window.eliminarPedido = async function(id) {
+            const pedidoId = parseInt(id);
+            if (isNaN(pedidoId) || pedidoId <= 0) {
+                alert('❌ ID de pedido inválido');
+                return;
+            }
+            
+            if (!confirm(`¿Estás seguro de eliminar el pedido #${pedidoId}?`)) return;
+            
+            try {
+                const res = await fetch(`/api/admin/pedidos/${pedidoId}`, {
+                    method: 'DELETE',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    alert('✅ Pedido eliminado correctamente');
+                    await cargarDatosReales();
+                } else {
+                    alert('❌ Error: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error de conexión: ' + error.message);
+            }
+        };
+
+        window.eliminarUsuario = async function(id, nombre) {
+            const userId = parseInt(id);
+            if (isNaN(userId) || userId <= 0) {
+                alert('❌ ID de usuario inválido');
+                return;
+            }
+            
+            if (!confirm(`¿Eliminar a "${nombre}"?`)) return;
+            
+            try {
+                const res = await fetch(`/api/admin/usuarios/${userId}`, {
+                    method: 'DELETE',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    alert('✅ Usuario eliminado correctamente');
+                    await cargarDatosReales();
+                } else {
+                    alert('❌ Error: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error de conexión: ' + error.message);
+            }
+        };
+
+        window.cambiarEstadoPedido = async function(pedidoId, nuevoEstado) {
+            try {
+                console.log(`🔄 Actualizando pedido #${pedidoId} a: ${nuevoEstado}`);
+                
+                const res = await fetch(`/api/admin/pedidos/${pedidoId}/estado`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ estado: nuevoEstado })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    console.log('✅ Estado actualizado');
+                } else {
+                    alert('❌ Error: ' + data.error);
+                    await cargarDatosReales();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error de conexión');
+                await cargarDatosReales();
+            }
+        };
+
+        window.exportarPedidosPDF = async function() {
+            try {
+                console.log('📄 Generando PDF...');
+                
+                const res = await fetch('/api/admin/pedidos', { credentials: 'include' });
+                const pedidos = await res.json();
+                
+                if (!pedidos || pedidos.length === 0) {
+                    alert('⚠️ No hay pedidos para exportar');
+                    return;
+                }
+                
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                const colorRojo = [227, 6, 19];
+                const colorNegro = [0, 0, 0];
+                const colorGris = [100, 100, 100];
+                
+                doc.setFillColor(...colorRojo);
+                doc.rect(0, 0, 210, 40, 'F');
+                
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(24);
+                doc.setFont('helvetica', 'bold');
+                doc.text('GIBOR F.C.', 14, 20);
+                
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Panel de Administración - Reporte de Pedidos', 14, 28);
+                
+                doc.setFontSize(9);
+                const fechaHora = new Date().toLocaleString('es-CO');
+                doc.text(`Generado: ${fechaHora}`, 14, 36);
+                
+                doc.setDrawColor(...colorRojo);
+                doc.setLineWidth(0.5);
+                doc.line(14, 42, 196, 42);
+                
+                const tableData = pedidos.map(p => [
+                    `#${p.id}`,
+                    p.nombre_cliente || 'N/A',
+                    p.email || 'N/A',
+                    `$${parseFloat(p.total || 0).toLocaleString('en-US')}`,
+                    p.estado.toUpperCase(),
+                    new Date(p.fecha_pedido).toLocaleDateString('es-CO')
+                ]);
+                
+                const totalVentas = pedidos.reduce((sum, p) => sum + (parseFloat(p.total) || 0), 0);
+                
+                doc.autoTable({
+                    startY: 48,
+                    head: [['Pedido', 'Cliente', 'Email', 'Total', 'Estado', 'Fecha']],
+                    body: tableData,
+                    theme: 'striped',
+                    headStyles: { fillColor: colorRojo, textColor: 255, fontStyle: 'bold', halign: 'center' },
+                    styles: { fontSize: 9, cellPadding: 3, valign: 'middle' },
+                    columnStyles: {
+                        0: { cellWidth: 25, halign: 'center' },
+                        1: { cellWidth: 40 },
+                        2: { cellWidth: 50 },
+                        3: { cellWidth: 30, halign: 'right' },
+                        4: { cellWidth: 30, halign: 'center' },
+                        5: { cellWidth: 30, halign: 'center' }
+                    },
+                    alternateRowStyles: { fillColor: [245, 245, 245] }
+                });
+                
+                const finalY = doc.lastAutoTable.finalY + 10;
+                
+                doc.setFillColor(245, 245, 245);
+                doc.rect(14, finalY, 100, 20, 'F');
+                
+                doc.setFontSize(12);
+                doc.setTextColor(...colorNegro);
+                doc.setFont('helvetica', 'bold');
+                doc.text('TOTAL VENTAS:', 20, finalY + 10);
+                
+                doc.setFontSize(14);
+                doc.setTextColor(...colorRojo);
+                doc.text(`$${totalVentas.toLocaleString('en-US')}`, 80, finalY + 10);
+                
+                const pageCount = doc.internal.getNumberOfPages();
+                doc.setFontSize(8);
+                doc.setTextColor(...colorGris);
+                doc.setFont('helvetica', 'italic');
+                doc.text('Documento generado automáticamente - GIBOR F.C. E-Commerce', 105, 290, { align: 'center' });
+                
+                const nombreArchivo = `pedidos-gibor-fc-${new Date().toISOString().split('T')[0]}.pdf`;
+                doc.save(nombreArchivo);
+                
+                console.log('✅ PDF generado exitosamente:', nombreArchivo);
+                
+            } catch (error) {
+                console.error('Error generando PDF:', error);
+                alert('❌ Error al generar el PDF: ' + error.message);
+            }
+        };
+    </script>
+</body>
+</html>

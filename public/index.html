@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIBOR F.C - Sitio Oficial</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Google Fonts - Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="js/main.js"></script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda - GIBOR F.C</title>
+    
+    <link rel="icon" type="image/png" href="images/escudo.png">
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <img src="images/escudo.png" alt="GIBOR FC Escudo" class="escudo">
+                <h1 class="logo">GIBOR F.C</h1>
+            </div>
+            <nav class="nav">
+    <ul>
+        <li><a href="index.html">INICIO</a></li>
+        <li><a href="equipos.html">EQUIPOS</a></li>
+        <li><a href="tienda.html">TIENDA</a></li>
+        <li><a href="sedes.html">SEDES</a></li>
+        <li><a href="contacto.html">CONTACTO</a></li>
+        <li><a href="mis-pedidos.html">MIS PEDIDOS</a></li>
+
+        
+        <li><a href="login.html" class="btn-login" id="btnLogin">🔐 INGRESAR</a></li>
+    </ul>
+</nav>
+        </div>
+    </header>
+
+    <!-- Hero Section (SOLO en el inicio) -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2> SITIO OFICIAL DE GIBOR F.C</h2>
+            <p>Pasion por el futbol</p>
+            <p>#LosEspartanos</p>
+        </div>
+    </section>
+
+    <!-- Calendario y Resultados -->
+<section class="calendario-section">
+    <div class="container">
+        <h2 class="section-title">CALENDARIO</h2>
+        
+        <!-- Cuenta Regresiva -->
+        <div class="countdown-container">
+            <div class="countdown-label">PRÓXIMO PARTIDO</div>
+            <div class="countdown" id="countdown">
+                <div class="countdown-item">
+                    <span class="countdown-number" id="days">00</span>
+                    <span class="countdown-text">DÍAS</span>
+                </div>
+                <div class="countdown-separator">:</div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="hours">00</span>
+                    <span class="countdown-text">HORAS</span>
+                </div>
+                <div class="countdown-separator">:</div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="minutes">00</span>
+                    <span class="countdown-text">MIN</span>
+                </div>
+                <div class="countdown-separator">:</div>
+                <div class="countdown-item">
+                    <span class="countdown-number" id="seconds">00</span>
+                    <span class="countdown-text">SEG</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Partidos -->
+        <div class="partidos-grid">
+            <!-- Partido 1 - Próximo -->
+            <div class="partido-card proximo">
+                <div class="partido-header">
+                    <span class="partido-tag">Próximo Partido</span>
+                </div>
+                <div class="partido-teams">
+                    <div class="team">
+                        <img src="images/escudo.png" alt="GIBOR FC" class="team-logo">
+                        <span class="team-name">GIBOR F.C 2012-2013</span>
+                    </div>
+                    <div class="vs">VS</div>
+                    <div class="team">
+                        <img src="images/escudo-rival.png" alt="Rival" class="team-logo">
+                        <span class="team-name">RIVAL FC</span>
+                    </div>
+                </div>
+                <div class="partido-info">
+                    <div class="partido-date">
+                        <span class="date-icon">📅</span>
+                        <strong>Domingo, marzo 29, 15:00 hrs</strong>
+                    </div>
+                    <div class="partido-tournament">
+                        <span>🏆</span> Liga Local - Jornada 5
+                    </div>
+                    <div class="partido-stadium">
+                        <span>🏟️</span> Estadio Municipal
+                    </div>
+                </div>
+            </div>
+
+            <!-- Partido 2 -->
+            <div class="partido-card">
+                <div class="partido-header">
+                    <span class="partido-tag">Próximo</span>
+                </div>
+                <div class="partido-teams">
+                    <div class="team">
+                        <img src="images/escudo-rival2.png" alt="Rival 2" class="team-logo">
+                        <span class="team-name">DEPORTIVO NORTE</span>
+                    </div>
+                    <div class="vs">VS</div>
+                    <div class="team">
+                        <img src="images/escudo.png" alt="GIBOR FC" class="team-logo">
+                        <span class="team-name">GIBOR F.C 2016-2017</span>
+                    </div>
+                </div>
+                <div class="partido-info">
+                    <div class="partido-date">
+                        <span class="date-icon">📅</span>
+                        <strong>Sábado, abril 05, 16:00 hrs</strong>
+                    </div>
+                    <div class="partido-tournament">
+                        <span>🏆</span> Liga Local - Jornada 6
+                    </div>
+                    <div class="partido-stadium">
+                        <span>🏟️</span> Estadio Norte
+                    </div>
+                </div>
+            </div>
+
+            <!-- Partido 3 -->
+            <div class="partido-card">
+                <div class="partido-header">
+                    <span class="partido-tag">Próximo</span>
+                </div>
+                <div class="partido-teams">
+                    <div class="team">
+                        <img src="images/escudo.png" alt="GIBOR FC" class="team-logo">
+                        <span class="team-name">GIBOR F.C 2012-2013</span>
+                    </div>
+                    <div class="vs">VS</div>
+                    <div class="team">
+                        <img src="images/escudo-rival3.png" alt="Rival 3" class="team-logo">
+                        <span class="team-name">ATLÉTICO SUR</span>
+                    </div>
+                </div>
+                <div class="partido-info">
+                    <div class="partido-date">
+                        <span class="date-icon">📅</span>
+                        <strong>Miércoles, abril 09, 19:00 hrs</strong>
+                    </div>
+                    <div class="partido-tournament">
+                        <span>🏆</span> Copa Regional - Cuartos
+                    </div>
+                    <div class="partido-stadium">
+                        <span>🏟️</span> Estadio Municipal
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resultados Recientes -->
+        <h3 class="resultados-title">RESULTADOS RECIENTES</h3>
+        <div class="resultados-grid">
+            <!-- Resultado 1 -->
+            <div class="resultado-card victoria">
+                <div class="resultado-header">
+                    <span class="resultado-tournament">Liga Local - Jornada 4</span>
+                    <span class="resultado-date">15 Mar 2026</span>
+                </div>
+                <div class="resultado-teams">
+                    <div class="resultado-team">
+                        <span class="team-name">GIBOR F.C</span>
+                        <span class="team-logo-small">🔴</span>
+                    </div>
+                    <div class="resultado-score">
+                        <span class="score">3</span>
+                        <span class="score-sep">-</span>
+                        <span class="score">1</span>
+                    </div>
+                    <div class="resultado-team">
+                        <span class="team-logo-small">⚫</span>
+                        <span class="team-name">RIVAL FC</span>
+                    </div>
+                </div>
+                <div class="resultado-status">
+                    <span class="status-victoria">VICTORIA</span>
+                </div>
+            </div>
+
+            <!-- Resultado 2 -->
+            <div class="resultado-card empate">
+                <div class="resultado-header">
+                    <span class="resultado-tournament">Liga Local - Jornada 3</span>
+                    <span class="resultado-date">08 Mar 2026</span>
+                </div>
+                <div class="resultado-teams">
+                    <div class="resultado-team">
+                        <span class="team-name">DEPORTIVO OESTE</span>
+                        <span class="team-logo-small">🔵</span>
+                    </div>
+                    <div class="resultado-score">
+                        <span class="score">2</span>
+                        <span class="score-sep">-</span>
+                        <span class="score">2</span>
+                    </div>
+                    <div class="resultado-team">
+                        <span class="team-logo-small">🔴</span>
+                        <span class="team-name">GIBOR F.C</span>
+                    </div>
+                </div>
+                <div class="resultado-status">
+                    <span class="status-empate">EMPATE</span>
+                </div>
+            </div>
+
+            <!-- Resultado 3 -->
+            <div class="resultado-card victoria">
+                <div class="resultado-header">
+                    <span class="resultado-tournament">Liga Local - Jornada 2</span>
+                    <span class="resultado-date">01 Mar 2026</span>
+                </div>
+                <div class="resultado-teams">
+                    <div class="resultado-team">
+                        <span class="team-name">GIBOR F.C</span>
+                        <span class="team-logo-small">🔴</span>
+                    </div>
+                    <div class="resultado-score">
+                        <span class="score">4</span>
+                        <span class="score-sep">-</span>
+                        <span class="score">0</span>
+                    </div>
+                    <div class="resultado-team">
+                        <span class="team-logo-small">🟢</span>
+                        <span class="team-name">ATLÉTICO ESTE</span>
+                    </div>
+                </div>
+                <div class="resultado-status">
+                    <span class="status-victoria">VICTORIA</span>
+                </div>
+            </div>
+       </div>
+</section>  
+<!-- ========================================
+     SECCIÓN NOSOTROS - GIBOR F.C.
+     ======================================== -->
+<section class="nosotros-section">
+    <!-- Hero Banner -->
+    <div class="nosotros-hero">
+        <div class="nosotros-overlay"></div>
+        <div class="nosotros-hero-content">
+            <h1 class="nosotros-title">NOSOTROS</h1>
+        </div>
+    </div>
+
+    <!-- Introducción del Club -->
+    <div class="container">
+        <div class="nosotros-intro">
+            <h2 class="section-subtitle">El Programa De Formación Deportiva...</h2>
+            <p class="nosotros-text">
+                GIBOR F.C. es un club deportivo comprometido con la formación integral de niños y jóvenes 
+                a través del fútbol. Nuestro programa se fundamenta en valores como la disciplina, el 
+                trabajo en equipo y la superación personal, buscando no solo formar excelentes deportistas 
+                sino también personas de bien para la sociedad.
+            </p>
+            <p class="nosotros-text">
+                Desde este 2026 empezamos en el fútbol formativo, nos hemos consolidado como una institución 
+                que combina la excelencia deportiva con la formación humana, proyectando talentos hacia 
+                el fútbol profesional y brindando herramientas para la vida.
+            </p>
+        </div>
+    </div>
+
+    <!-- Misión -->
+    <div class="mision-vision-container">
+        <div class="container">
+            <div class="mision-vision-row">
+                <div class="imagen-circular">
+                    <img src="images/nosotros/mision.png" alt="Niños entrenando GIBOR FC" class="img-circular">
+                    <div class="circulo-decorativo"></div>
+                </div>
+                <div class="texto-mv">
+                    <h2 class="mv-title">NUESTRA MISIÓN:</h2>
+                    <p>
+                        Formar integralmente a niños y jóvenes colombianos a través del fútbol, desarrollando 
+                        sus cualidades motrices, habilidades técnico-deportivas y capacidades humanas. Buscamos 
+                        fomentar hábitos de vida saludable, fortalecer valores esenciales como la disciplina, 
+                        la voluntad, el trabajo en equipo y el deseo permanente de superación.
+                    </p>
+                    <p>
+                        Nuestro programa va más allá de lo deportivo, impactando positivamente en la condición 
+                        humana integral de nuestros participantes y sus familias, formando ciudadanos de bien 
+                        para la sociedad.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Visión -->
+    <div class="mision-vision-container">
+        <div class="container">
+            <div class="mision-vision-row reverse">
+                <div class="texto-mv">
+                    <h2 class="mv-title">NUESTRA VISIÓN:</h2>
+                    <p>
+                        Ser reconocidos como el líder en formación deportiva integral en Colombia, destacándonos 
+                        por nuestro rendimiento deportivo, servicio interdisciplinario y compromiso con la 
+                        formación de deportistas integrales y talentos al servicio del fútbol colombiano.
+                    </p>
+                    <p>
+                        Expandiremos nuestros servicios a nivel internacional, ampliando las experiencias de 
+                        aprendizaje significativo para nuestros usuarios, a través del intercambio socio cultural 
+                        por medio del deporte y la recreación, proyectando nuestros jugadores hacia el fútbol 
+                        profesional.
+                    </p>
+                </div>
+                <div class="imagen-circular">
+                    <img src="images/nosotros/vision.jpg" alt="Jóvenes GIBOR FC celebrando" class="img-circular">
+                    <div class="circulo-decorativo"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+</style>
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>GIBOR F.C</h3>
+            <p>Pasión, esfuerzo y gloria desde 2026</p>
+        </div>
+        <div class="footer-section">
+            <h3>Enlaces</h3>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="tienda.html">Tienda</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Síguenos</h3>
+            <div class="social-links">
+                <a href="#">Facebook</a>
+                <a href="#">Instagram</a>
+                <a href="#">Twitter</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 GIBOR F.C - Todos los derechos reservados</p>
+        <a href="admin-login.html" class="admin-access">🔐 Acceso Admin</a>
+    </div>
+</footer>
+<script src="js/auth.js"></script>
+</body>
+</html>

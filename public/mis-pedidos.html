@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Pedidos - GIBOR F.C</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .pedidos-container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+        .pedidos-header { text-align: center; margin-bottom: 40px; }
+        .pedidos-header h2 { color: #e30613; font-size: 2rem; margin-bottom: 10px; }
+        
+        .pedido-card {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 2px solid #333;
+            transition: border-color 0.3s;
+        }
+        
+        .pedido-card:hover { border-color: #e30613; }
+        
+        .pedido-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 15px;
+        }
+        
+        .pedido-id { color: #e30613; font-weight: 700; font-size: 1.2rem; }
+        .pedido-fecha { color: #999; font-size: 0.9rem; }
+        
+        .pedido-estado {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+        
+        .estado-pendiente { background: #f59e0b; color: #000; }
+        .estado-procesando { background: #3b82f6; color: white; }
+        .estado-enviado { background: #8b5cf6; color: white; }
+        .estado-entregado { background: #10b981; color: white; }
+        .estado-cancelado { background: #ef4444; color: white; }
+        
+        .pedido-detalles { margin-top: 15px; }
+        .detalle-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #222;
+        }
+        .detalle-item:last-child { border-bottom: none; }
+        .detalle-nombre { color: white; }
+        .detalle-cantidad { color: #999; }
+        .detalle-precio { color: #e30613; font-weight: 700; }
+        
+        .pedido-total {
+            text-align: right;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #e30613;
+        }
+        .total-label { color: #999; margin-right: 10px; }
+        .total-valor { color: #e30613; font-size: 1.5rem; font-weight: 900; }
+        
+        .pedido-info {
+            background: #0a0a0a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .pedido-info p { color: #ccc; margin: 5px 0; font-size: 0.9rem; }
+        
+        .btn-ver-detalles {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: background 0.3s;
+        }
+        .btn-ver-detalles:hover { background: #e30613; }
+        
+        .sin-pedidos {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        .sin-pedidos h3 { color: #e30613; margin-bottom: 15px; }
+        .btn-volver-tienda {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: #e30613;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 700;
+            transition: background 0.3s;
+        }
+        .btn-volver-tienda:hover { background: #c40510; }
+        
+        @media (max-width: 768px) {
+            .pedido-header { flex-direction: column; gap: 10px; text-align: center; }
+            .detalle-item { flex-direction: column; gap: 5px; }
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda - GIBOR F.C</title>
+    
+    <!-- ✅ AGREGA ESTO: Favicon con el escudo -->
+    <link rel="icon" type="image/png" href="images/escudo.png">
+    <!-- O si prefieres.ico: <link rel="icon" type="image/x-icon" href="images/escudo.ico"> -->
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <img src="images/escudo.png" alt="GIBOR FC" class="escudo">
+                <h1 class="logo">GIBOR F.C</h1>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="index.html">INICIO</a></li>
+                    <li><a href="tienda.html">TIENDA</a></li>
+                    <li><a href="perfil.html">MI PERFIL</a></li>
+                    <li><a href="sedes.html">SEDES</a></li>
+                    <li><a href="contacto.html">CONTACTO</a></li>
+                    <li><a href="mis-pedidos.html">MIS PEDIDOS</a></li>
+        
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <section class="page-content">
+        <div class="container">
+            <div class="pedidos-container">
+                <div class="pedidos-header">
+                    <h2>📦 MIS PEDIDOS</h2>
+                    <p style="color: #999;">Historial de todas tus compras</p>
+                </div>
+                
+                <div id="pedidosList">
+                    <p style="color: #999; text-align: center;">Cargando pedidos...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>GIBOR F.C</h3>
+            <p>Pasión, esfuerzo y gloria desde 2026</p>
+        </div>
+        <div class="footer-section">
+            <h3>Enlaces</h3>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="tienda.html">Tienda</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h3>Síguenos</h3>
+            <div class="social-links">
+                <a href="#">Facebook</a>
+                <a href="#">Instagram</a>
+                <a href="#">Twitter</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 GIBOR F.C - Todos los derechos reservados</p>
+        <a href="admin-login.html" class="admin-access">🔐 Acceso Admin</a>
+    </div>
+</footer>
+
+    <script>
+        // Cargar historial de pedidos
+        async function cargarPedidos() {
+            try {
+                const response = await fetch('/api/mis-pedidos');
+                
+                if (response.status === 401) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                const data = await response.json();
+                mostrarPedidos(data.pedidos);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('pedidosList').innerHTML = `
+                    <div class="sin-pedidos">
+                        <h3>❌ Error al cargar pedidos</h3>
+                        <p>Inténtalo de nuevo más tarde</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Mostrar pedidos en pantalla
+        function mostrarPedidos(pedidos) {
+            const container = document.getElementById('pedidosList');
+            
+            if (pedidos.length === 0) {
+                container.innerHTML = `
+                    <div class="sin-pedidos">
+                        <h3>🛒 No has realizado compras aún</h3>
+                        <p>Explora nuestra tienda y encuentra los mejores productos</p>
+                        <a href="tienda.html" class="btn-volver-tienda">IR A LA TIENDA</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            
+            pedidos.forEach(pedido => {
+                const fecha = new Date(pedido.fecha_pedido).toLocaleDateString('es-CO', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                let detallesHTML = '';
+                pedido.detalles.forEach(detalle => {
+                    detallesHTML += `
+                        <div class="detalle-item">
+                            <div>
+                                <div class="detalle-nombre">${detalle.producto_nombre}</div>
+                                <div class="detalle-cantidad">Talla: ${detalle.talla} | Cant: ${detalle.cantidad}</div>
+                            </div>
+                            <div class="detalle-precio">$${detalle.subtotal.toLocaleString()}</div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                    <div class="pedido-card">
+                        <div class="pedido-header">
+                            <div>
+                                <div class="pedido-id">Pedido #${pedido.id}</div>
+                                <div class="pedido-fecha">${fecha}</div>
+                            </div>
+                            <span class="pedido-estado estado-${pedido.estado}">${pedido.estado}</span>
+                        </div>
+                        
+                        <div class="pedido-detalles">
+                            ${detallesHTML}
+                        </div>
+                        
+                        <div class="pedido-total">
+                            <span class="total-label">TOTAL:</span>
+                            <span class="total-valor">$${pedido.total.toLocaleString()}</span>
+                        </div>
+                        
+                        <div class="pedido-info">
+                            <p><strong>📍 Dirección:</strong> ${pedido.direccion}, ${pedido.ciudad}</p>
+                            <p><strong>📞 Teléfono:</strong> ${pedido.telefono}</p>
+                            <p><strong>💳 Pago:</strong> ${pedido.metodo_pago.replace('_', ' ').toUpperCase()}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Cargar al iniciar
+        document.addEventListener('DOMContentLoaded', cargarPedidos);
+    </script>
+    <script src="js/auth.js"></script>
+</body>
+</html>
